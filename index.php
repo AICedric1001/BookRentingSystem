@@ -1,27 +1,30 @@
 <?php
-session_start();
 include_once("config.php");
-
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
-    $password = $_POST["password"];
+    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+    $role = $_POST["role"];
+    $firstname = $_POST["firstname"];
+    $lastname = $_POST["lastname"];
 
-    $stmt = $conn->prepare("SELECT LastName, FirstnName FROM User WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    
-    $stmt->execute();
-    
-    $stmt->store_result();
-    $stmt->bind_result($savedUsername, $hashedPassword);
+    $stmt = null;
 
-    if ($stmt->fetch() && password_verify($password, $hashedPassword)) {
-    
-        $_SESSION['user'] = $username;
-        header("Location: home.php");
-        exit();
+    $stmt = $conn->prepare("INSERT INTO $role (Firstname, Lastname, $idField) VALUES (?, ?, ?)");
+
+    if ($stmt->execute()) {
+        $stmt_user = $conn->prepare("INSERT INTO User (username, password, role) VALUES (?, ?, ?)");
+        $stmt_user->bind_param("sss", $username, $password, $role);
+
+        if ($stmt_user->execute()) {
+            echo "<p class='success-message'>Registration successful. <a href='index.php'>Login here</a>.</p>";
+        } else {
+            echo "<p class='error-message'>Error during user registration.</p>";
+        }
+
+        $stmt_user->close();
     } else {
-        $loginError = "Login failed. Please check your username and password. Or click Register.";
+        echo "<p class='error-message'>Error during registration.</p>";
     }
 
     $stmt->close();
@@ -34,32 +37,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="styles.css"> 
-    <style>
-    
-    </style>
+    <title>Registration</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h2>Login</h2>
+        <h2>Registration</h2>
 
-        <?php if (isset($loginError)) : ?>
-            <p class="error-message"><?php echo $loginError; ?></p>
-        <?php endif; ?>
+        <form method="post" action="register.php">
+            <label for="username">Username:</label>
+            <input type="text" name="username" required><br>
 
-        <form method="post" action="">
-            <label for="firstname">Firstname</label>
-            <input type="text" name="Firstname" required><br>
+            <label for="password">Password:</label>
+            <input type="password" name="password" required><br>
 
-            <label for="lastname">Lastname</label>
-            <input type="text" name="Lastname" required><br>
+            <label for="role">Role:</label>
+            <select name="role" id="role" required>
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+                <option value="utility">Utility</option>
+                <option value="visitor">Visitor</option>
+            </select><br>
 
-            <label for="address">Address</label>
-            <input type="text" name="Address" required><br>
+            <label for="firstname">First Name:</label>
+            <input type="text" name="firstname" required><br>
 
-            <input type="submit" value="Login">
+            <label for="lastname">Last Name:</label>
+            <input type="text" name="lastname" required><br>
+
+
+            <input type="submit" value="Register">
         </form>
+
     </div>
 </body>
 </html>
