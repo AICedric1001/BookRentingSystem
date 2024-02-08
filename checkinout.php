@@ -1,8 +1,11 @@
 <?php
 include_once("config.php");
 
-$sql = "SELECT * FROM checkinout";
+$sql = "SELECT * FROM checkinout
+        INNER JOIN renteraccount ON checkinout.PersonID = renteraccount.PersonID
+        ";
 $result = $conn->query($sql);
+
 
 if ($result->num_rows > 0) {
     echo "
@@ -50,10 +53,11 @@ if ($result->num_rows > 0) {
             <div class='details-box'>
     ";
 
-    while ($row = $result->fetch_assoc()) {
+        while ($row = $result->fetch_assoc()) {
         echo "
             <div class='details'>
                 <p><strong>Person ID:</strong> " . $row['PersonID'] . "</p>
+                <p><strong>Name:</strong> " . $row['FirstName'] . " " . $row['LastName'] . "</p>
                 <p><strong>Time In:</strong> " . $row['TimeIn'] . "</p>
                 <p><strong>Book ID:</strong> " . $row['BookId'] . "</p>
             </div>
