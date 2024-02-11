@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -62,8 +62,7 @@
     <div class="container">
         <h2>Users</h2>
 
-
- <?php
+        <?php
         include_once("config.php");
 
         $users = array();
@@ -81,36 +80,28 @@
 
         $conn->close();
 
-   if (!empty($users)) {
-    echo "<table>";
-    echo "<tr><th>Person ID</th><th>Firstname</th><th>Lastname</th><th>Address</th><th>Modify</th></tr>";
-    foreach ($users as $user) {
-        echo "<tr>";
-        echo "<td>{$user['PersonID']}</td>";
-        echo "<td>{$user['Firstname']}</td>";
-        echo "<td>{$user['Lastname']}</td>";
-        echo "<td>{$user['Address']}</td>";
-        echo "<td>";
-        // Delete button
-        echo "<form method='post' action='delete_user.php'>";
-        echo "<input type='hidden' name='person_id' value='{$user['PersonID']}'>";
-        echo "<input type='submit' value='Delete'>";
-        echo "</form>";
-        // Update button
-        echo "<form method='get' action='update_user.php'>";
-        echo "<input type='hidden' name='person_id' value='{$user['PersonID']}'>";
-        echo "<input type='submit' value='Update'>";
-        echo "</form>";
-        echo "</td>";
-        echo "</tr>";
-    }
-    echo "</table>";
-} else {
-    echo "<p>No users found.</p>";
-}
+        if (!empty($users)) {
+            echo "<table>";
+            echo "<tr><th>Person ID</th><th>Firstname</th><th>Lastname</th><th>Address</th><th>Configure</th></tr>";
+            foreach ($users as $user) {
+                echo "<tr>";
+                echo "<td>{$user['PersonID']}</td>";
+                echo "<td>{$user['Firstname']}</td>";
+                echo "<td>{$user['Lastname']}</td>";
+                echo "<td>{$user['Address']}</td>";
+                echo "<td>";
+                echo "<form method='get' action='configure_user.php'>";
+                echo "<input type='hidden' name='person_id' value='{$user['PersonID']}'>";
+                echo "<input type='submit' value='Configure'>";
+                echo "</form>";
+                echo "</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+        } else {
+            echo "<p>No users found.</p>";
+        }
         ?>
-
     </div>
 </body>
 </html>
-
