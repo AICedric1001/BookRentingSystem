@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Library Management System - Dashboard</title>
     <style>
+        /* Your CSS styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -51,6 +51,31 @@
         .button:hover {
             background-color: #45a049;
         }
+        .form-container {
+            margin-top: 20px;
+        }
+        .form-container input[type=text], .form-container input[type=number] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-container input[type=submit] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-container input[type=submit]:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -59,14 +84,8 @@
 
     <h2>Library Management System - Dashboard</h2>
 
-    <?php
-    session_start();
-
-// Check if the user is not logged in, redirect to login page
-/*if (!isset($_SESSION['Fname'])) {
-    header("Location: login.php");
-    exit();
-} */
+  <?php
+    // Include the database connection
     include_once("config.php");
 
     // Fetching books from database
@@ -75,13 +94,19 @@
 
     if ($result->num_rows > 0) {
         echo "<table>";
-        echo "<tr><th>Book ID</th><th>Book Name</th><th>Genre</th><th>Chronology</th></tr>";
+        echo "<tr><th>Book ID</th><th>Book Name</th><th>Genre</th><th>Chronology</th><th>Action</th></tr>";
         while($row = $result->fetch_assoc()) {
             echo "<tr>";
             echo "<td>".$row["BookID"]."</td>";
             echo "<td>".$row["BookName"]."</td>";
             echo "<td>".$row["Genre"]."</td>";
             echo "<td>".$row["Chronology"]."</td>";
+            echo "<td>
+                    <form method='post' action='config_book.php'>
+                        <input type='hidden' name='book_id' value='".$row["BookID"]."'>
+                        <input type='submit' name='config' value='Config'>
+                    </form>
+                  </td>";
             echo "</tr>";
         }
         echo "</table>";
@@ -92,10 +117,22 @@
     $conn->close();
     ?>
 
+    <div class="form-container">
+        <h2>Add a New Book</h2>
+        <form action="insert_book.php" method="post">
+            <label for="bookname">Book Name:</label>
+            <input type="text" id="bookname" name="bookname" required>
+            <label for="genre">Genre:</label>
+            <input type="text" id="genre" name="genre" required>
+            <label for="chronology">Chronology:</label>
+            <input type="number" id="chronology" name="chronology" required>
+            <input type="submit" value="Add Book">
+        </form>
+    </div>
+
     <br>
     <a href="bookrent.php" class="button">Rent A Book!</a>
     <a href="logout.php" class="button">Logout</a>
-
 </div>
 
 </body>

@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h2>User Login</h2>
-        <form action="process_login.php" method="POST">
+        <form action="dashboard.php" method="POST">
             <label for="Fname">Firstname</label>
             <input type="text" id="Fname" name="Fname" required>
             <label for="password">Password:</label>
