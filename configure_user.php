@@ -28,7 +28,7 @@ $stmt->close();
 // Process update or delete operation
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST["action"])) {
-        if ($_POST["action"] === "update") {
+        if ($_POST["action"] === "Update") {
             // Perform update operation
             if (isset($_POST["person_id"], $_POST["firstname"], $_POST["lastname"], $_POST["address"])) {
                 $person_id = $_POST["person_id"];
@@ -50,31 +50,43 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 $stmt->close();
             }
-        } elseif ($_POST["action"] === "delete") {
-            // Perform delete operation
-            if (isset($_POST["person_id"])) {
-                $person_id = $_POST["person_id"];
-                
-                // Perform the delete operation
-                $stmt = $conn->prepare("DELETE FROM renteraccount WHERE PersonID = ?");
-                $stmt->bind_param("i", $person_id);
-                $stmt->execute();
+        } elseif ($_POST["action"] === "Delete") {
+        // Perform the delete operation
+$stmt = $conn->prepare("DELETE FROM renteraccount WHERE PersonID = ?");
+$stmt->bind_param("i", $person_id);
+$stmt->execute();
 
-                // Check if any rows were affected
-                if ($stmt->affected_rows > 0) {
-                    // Redirect back to users_list.php after successful delete
-                    header("Location: users_list.php");
-                    exit();
-                } else {
-                    // No rows affected
-                    echo "Error: User not found or already deleted.";
-                }
+// Check if any rows were affected
+if ($stmt->affected_rows > 0) {
+    // Retrieve the remaining users from the database
+    $result = $conn->query("SELECT * FROM renteraccount ORDER BY PersonID");
+    $users = [];
+    while ($row = $result->fetch_assoc()) {
+        $users[] = $row;
+    }
 
-                $stmt->close();
+    // Update the PersonID values
+    $newPersonID = 1;
+    foreach ($users as $user) {
+        $conn->query("UPDATE renteraccount SET PersonID = $newPersonID WHERE PersonID = {$user['PersonID']}");
+        $newPersonID++;
+    }
+
+    // Redirect back to users_list.php after successful delete
+    header("Location: users_list.php");
+    exit();
+} else {
+    // No rows affected
+    echo "Error: User not found or already deleted.";
+}
+
+$stmt->close();
+
+
             }
         }
     }
-}
+
 
 $conn->close();
 ?>
@@ -91,7 +103,7 @@ $conn->close();
     <div class="container">
         <h2>Configure User</h2>
 
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+        <form method="post" action="">
             <input type="hidden" name="person_id" value="<?php echo $user['PersonID']; ?>">
             <label for="firstname">First Name:</label>
             <input type="text" name="firstname" value="<?php echo $user['FirstName']; ?>" required>

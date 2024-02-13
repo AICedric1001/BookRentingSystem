@@ -63,6 +63,10 @@
         <h2>Users</h2>
 
         <?php
+
+        error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
         include_once("config.php");
 
         $users = array();
