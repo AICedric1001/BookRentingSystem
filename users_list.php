@@ -71,7 +71,7 @@ ini_set('display_errors', 1);
 
         $users = array();
 
-        // Fetch Users
+        // Fetches Users
         $RentAccount = $conn->query("SELECT * FROM renteraccount");
         while ($row = $RentAccount->fetch_assoc()) {
             $users[] = array(

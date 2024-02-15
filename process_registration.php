@@ -11,7 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-
     $stmt = $conn->prepare("INSERT INTO renteraccount (FirstName, LastName, Address, password) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss", $firstname, $lastname, $address, $password);
 

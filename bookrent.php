@@ -3,7 +3,6 @@ include_once("config.php");
 
 $error_message = "";
 
-// Fetching books data for reference
 $books_query = "SELECT * FROM books";
 $books_result = $conn->query($books_query);
 
@@ -25,7 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result_books = $stmt->get_result();
 
     if ($result_rentaccount->num_rows > 0 && $result_books->num_rows > 0) {
-        // Insert data into the checkinout table
         $stmt = $conn->prepare("INSERT INTO checkinout (PersonID, TimeIn, BookID) VALUES (?, ?, ?)");
         $stmt->bind_param("iss", $personID, $timeIn, $bookID);
 
@@ -177,10 +175,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="submit" value="Submit">
         </form>
 
-        <!-- Book List Button -->
         <div id="book-list-btn">Book List</div>
 
-        <!-- Book List Container -->
         <div class="book-list-container" id="book-list-container">
             <h2>Book List</h2>
             <ul class="book-list">
